@@ -1,0 +1,271 @@
+/* General reset for margin, padding, and box-sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body style: vintage look with a soft, paper-like background */
+body {
+  font-family: 'Georgia', serif;
+  background-color: #f4ecd8;  /* Light parchment color */
+  color: #4b3b2a;             /* Dark brown text */
+  line-height: 1.6;
+  padding-bottom: 50px;
+}
+
+/* Header styles with muted colors and vintage fonts */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #a67c52;  /* Soft brown for vintage */
+  color: white;
+  padding: 20px;
+  border-bottom: 2px solid #4b3b2a;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+  font-family: 'Garamond', serif;
+  font-size: 32px;
+  font-weight: bold;
+}
+ 
+.logo img {
+    width: 40px; /* Adjust width based on how large you want the image */
+    height: auto;
+    margin-right: 10px; /* Adds space between the image and text */
+    border-radius: 50%; /* Optional: Makes the image circular if desired */
+  }
+  
+  /* Ensure logo text and image fit nicely */
+  .logo-image {
+    max-height: 40px; /* Adjust if needed to control the height of the logo */
+  }
+/* Search bar styling for vintage look */
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
+.search-container input[type="text"] {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #4b3b2a;
+  background-color: #4b3b2a;
+  border-radius: 5px 0 0 5px;
+  color: #4b3b2a;
+}
+
+.search-container button {
+  padding: 10px;
+  background-color: #d4a373;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  color: white;
+}
+
+.search-container button:hover {
+  background-color: #4b3b2a;
+}
+
+/* Navigation bar styles with softer vintage colors */
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+nav ul li a {
+  color: #f4ecd8; /* Light parchment color */
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: #6c5b43;
+  border-radius: 5px;
+}
+
+nav ul li a:hover {
+  background-color: #4b3b2a;
+}
+
+/* Cart icon with vintage styling */
+.cart a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.cart i {
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.cart a:hover {
+  color: #4b3b2a;
+}
+
+/* Sidebar styles with vintage typography and a slight texture */
+aside {
+  width: 20%;
+  background-color: #f4ecd8;
+  padding: 20px;
+  margin-right: 20px;
+  border: 1px solid #d4a373;
+}
+
+aside h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+aside ul {
+  list-style: none;
+}
+
+aside ul li {
+  margin-bottom: 10px;
+}
+
+aside ul li a {
+  text-decoration: none;
+  color: #4b3b2a;
+  font-size: 18px;
+}
+
+aside ul li a:hover {
+  color: #b57f57;
+}
+
+/* Book section styles */
+.books {
+  width: 80%;
+}
+
+.books h1 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #4b3b2a;
+}
+
+.book-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.featured-books {
+    padding: 50px;
+  }
+  
+  .featured-books h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  
+
+.book {
+  background-color: #f9f0e1;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #d4a373;
+  text-align: center;
+    border-radius: 8px;
+
+}
+
+.book img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+  border: 1px solid #d4a373;
+}
+
+.book h3 {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* Footer styles */
+footer {
+  background-color: #4b3b2a;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-links {
+    margin-top: 10px;
+  }
+  
+  .footer-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+  }
+  
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+  
+body {
+    font-family: 'Georgia', serif;
+    background: url('path-to-vintage-paper-texture.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #4b3b2a;
+    line-height: 1.6;
+    padding-bottom: 50px;
+  }
+  .categories {
+    padding: 50px;
+    background-color: #fff;
+  }
+  
+  .categories h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .category {
+    background-color: #4b3b2a;
+    color: #d4a373;
+    padding: 30px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 100px;
+    color: #4b3b2a ;
+  }
+  
+  .hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .hero p {
+    font-size: 20px;
+  }
+  
+
+  
