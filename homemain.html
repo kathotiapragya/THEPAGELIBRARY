@@ -1,31 +1,128 @@
+<?php
+// Connect to the database
+$con = new PDO("mysql:host=localhost;dbname=thepagelibrary", 'root', '');
+
+// Initialize variables
+$searchQuery = "";
+$results = [];
+
+// Handle the search request
+if (isset($_GET['query']) && !empty($_GET['query'])) {
+    $searchQuery = $_GET['query'];
+    $sql = "SELECT * FROM books WHERE book_name LIKE :query OR book_author LIKE :query";
+    $stmt = $con->prepare($sql);
+    $stmt->bindValue(':query', '%' . $searchQuery . '%');
+    $stmt->execute();
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home</title>
-  <link rel="stylesheet" href="vin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+  <link rel="stylesheet" href="home.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
 </head>
 <body>
   <!-- Header Section -->
   <header>
     <div class="logo">
-      <img src="boo.jpeg" alt="PageLibrary Logo" class="logo-image">
+      <a href="homemain.html"><img src="thepagelibrarylogo.jpeg"  alt="PageLibrary Logo" class="logo-image"></a>
   </div>
-    <div class="search-container">
+       <form method="post" action="">
+        <div class="search-container">
       <input type="text" placeholder="Search for books...">
       <button type="submit">Search</button>
     </div>
+    </form>
+    <?php
+    try {
+        $con = new PDO("mysql:host=localhost;dbname=thepagelibrary", 'root', '');
+        $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        if (isset($_POST["submit"])) {
+            $str = $_POST["search"];
+            $sth = $con->prepare("SELECT * FROM books WHERE book_name LIKE :search OR book_author LIKE :search");
+
+            
+            $sth->bindValue(':search', "%$str%", PDO::PARAM_STR);
+            $sth->setFetchMode(PDO::FETCH_OBJ);
+            $sth->execute();
+
+            
+            if ($sth->rowCount() > 0) {
+                echo "<table>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Price</th>
+                            <th>Pages</th>
+                        </tr>";
+
+                while ($row = $sth->fetch()) {
+                    echo "<tr>
+                            <td>{$row->book_id}</td>
+                            <td>{$row->book_name}</td>
+                            <td>{$row->book_author}</td>
+                            <td>{$row->book_price}</td>
+                            <td>{$row->book_pages}</td>
+                          </tr>";
+                }
+
+                echo "</table>";
+            } else {
+                echo "<p>No books found matching your search query.</p>";
+            }
+        }
+    } catch (PDOException $e) {
+        echo "<p>Error: " . $e->getMessage() . "</p>";
+    }
+    ?>
     <nav>
-      <ul>
-        <li><a href="home main.html">Home</a></li>
-        <li><a href="#">Bestsellers</a></li>
-        <li><a href="#">Authors</a></li>
+      <ul class="menu">
+          <li><a href="homemain.html">Home</a></li>
+          <li class="dropdown">
+            <a href="best.html" class="dropbtn">Best Sellers</a>
+            <ul class="dropdown-content">
+              <li class="dropdown">
+                <a href="fiction.html" class="dropbtn">Fiction</a>
+                <ul class="dropdown-content">
+                  <li><a href="romance.html">Romance</a></li>
+                  <li><a href="mystery.html">Mystery</a></li>
+                  <li><a href="fantasy.html">Fantasy</a></li>
+                <li><a href="scifi.html">Science Fiction</a></li>
+                  <li><a href="adventure.html">Adventure</a></li>
+                  <li><a href="youngadult.html">Young Adult</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="nonfic.html" class="dropbtn">Non-Fiction</a>
+                <ul class="dropdown-content">
+                  <li><a href="biographies.html">Biographies</a></li>
+                  <li><a href="self.html">Self-Help</a></li>
+                  <li><a href="history.html">History</a></li>
+                  <li><a href="science.html">Science</a></li>
+                  <li><a href="philosophy.html">Philosophy</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                  <a href="kids.html" class="dropbtn">Kids</a>
+                  <ul class="dropdown-content">
+                    <li><a href="er.css">Early Readers</a></li>
+                    <li><a href="picture-books.html">Picture Books</a></li>
+                    <li><a href="youngadult.html">Young Adult</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+            <li><a href="author.html">Authors</a></li>
         <li><a href="premium.html">Premium</a></li>
-        <li><a href="#">My Library</a></li>
-        <li><a href="Login.html">Login</a></li>
+        <li><a href="lib.html">My Library</a></li>
+        <li><a href="#" onclick="openLoginModal()">Login</a></li> <!-- Opens the Login Modal -->
       </ul>
     </nav>
     <div class="cart">
@@ -33,7 +130,27 @@
           <i class="fas fa-shopping-cart"></i>
         </a>
       </div>
-    
+     <!-- Login Modal (Hidden by Default) -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>Login</h2>
+      <form action="login.php" method="POST">
+        <div class="form-group row">
+            <label for="username">Username: </label>
+            <input type="text" id="username" name="username" placeholder="Username">
+        </div>
+        <div class="form-group row">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Password">
+        </div>
+        <div class="form-group">
+            <input type="submit" name="Login" value="Login">
+        </div>
+        <p style="color:rgb(80, 20, 20);"> Not a user ? <a href="signup.php">Sign Up now</a></p>
+    </form>
+    </div>
+  </div>
   </header>
 
   <!-- Main Content Section -->
@@ -43,73 +160,132 @@
       <h1>Discover Your Next Favorite Book</h1>
       <p>Explore bestsellers, new releases, and recommendations tailored just for you.</p>
     </section>
+    
+  <!-- New Image Gallery Section (below Hero section) -->
+  <section class="image-gallery">
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="https://i.pinimg.com/564x/06/b5/ab/06b5ab5893aa23ec02ea611f3d300a83.jpg" alt="Bookshelf Image 1">
+        <h3> <center><i> Browse </i></center>  </h3>
+        <p><center>Thousands of books, all at your finger tips.</center></p>
+
+      </div>
+      <div class="gallery-item">
+        <img src="https://i.pinimg.com/236x/b9/f4/9e/b9f49e59b9031dae27fbc39fcce5cabe.jpg" alt="Bookshelf Image 2">
+        <h3> <center><i> Read</i> </center>  </h3>
+        <p><center>Read. Add to cart. Buy.</center></p>
+
+
+      </div>
+      <div class="gallery-item">
+        <img src="https://i.pinimg.com/236x/84/0a/9f/840a9fc1ee19b0554c3d6ed4203e99cf.jpg" alt="Bookshelf Image 3">
+        <h3> <center><i>Write </center> </i> </h3>
+        <p><center>Explore premium and upload your best content.</center></p>
+
+
+      </div>
+      <div class="gallery-item">
+        <img src="https://i.pinimg.com/564x/7c/9f/04/7c9f049bb5ce7ae4ecf7586f97b35639.jpg" alt="Bookshelf Image 4">
+        <h3> <center> <i>Connect</i> </center>  </h3>
+        <p><center>Connect with your favourite authors and fellow users.</center></p>
+
+
+      </div>
+    </div>
+  </section>
+
 
     <!-- Categories Section -->
     <section class="categories">
-      <h2>Genres</h2>
+      <h2><i>Categories</i></h2>
       <div class="category-grid">
-       <a href=""> <div class="category">Fiction</div></a>
-       <a href=""><div class="category">Romance</div></a>
-       <a href=""><div class="category">Mystery</div></a>
-       <a href=""><div class="category">Fantasy</div></a>
-       <a href=""><div class="category">New-Adult</div></a>
-       <a href=""><div class="category">Non-Fiction</div></a>
-       <a href=""><div class="category">History</div></a>
-       <a href=""><div class="category">Journals</div></a>
-      <a href=""><div class="category">Magazines</div></a>
+       <a href="fiction.html"> <div class="category">Fiction</div></a>
+       <a href="nonfic.html"><div class="category">Non-Fiction</div></a>
+             <a href="kids.html"><div class="category">Kids</div></a>
       </div>
     </section>
 
     <!-- Featured Books Section -->
     <section class="featured-books">
-      <h2>Featured Books</h2>
+      <h2><i>Featured Books</i></h2>
       <div class="book-grid">
         <div class="book">
-         <a href="#"><img src="pop.jpg" alt="Book 1"></a>
-          <h3><a href="#">Palace of Illusions </a></h3>
+         <a href="C:\xampp\htdocs\projectphp\The Palace of Illusions.pdf"><img src="pop.jpg" alt="Book 1"></a>
+          <h3>Palace of Illusions </a></h3>
         </div>
         <div class="book">
-            <a href="#"><img src="dv.jpg" alt="Book 2"></a>
-          <h3><a href="#">The Da Vinci Code </a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\The Da Vinci Code.pdf"><img src="dv.jpg" alt="Book 2"></a>
+          <h3>The Da Vinci Code </a></h3>
         </div>
         <div class="book">
-            <a href="#"><img src="fb.jpg" alt="Book 3"></a>
-          <h3><a href="#">The Forbes </a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\The Book Thief.pdf"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrD0DwT3uWLpdFj0e-33dHOYZ73t2SAjW_fQ&s" alt="Book 3"></a>
+          <h3>The Book Thief </a></h3>
         </div>
         <div class="book">
-            <a href="#"><img src="sitp.jpg" alt="Book 4"></a>
-          <h3><a href="#">The Summer I turned Pretty </a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\The Summer I Turned Pretty.pdf"><img src="sitp.jpg" alt="Book 4"></a>
+          <h3>The Summer I turned Pretty </a></h3>
         </div>
         <div class="book">
-            <a href="#"> <img src="pp.jpg" alt="Book 4"></a>
-            <h3><a href="#">Pride and Prejudice </a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\The Bell Jar.pdf"> <img src="https://i.pinimg.com/236x/0a/91/19/0a9119f5dbe58e06df3af72ec18b7fe8.jpg" alt="Book 4"></a>
+            <h3>The Bell Jar </a></h3>
           </div>
           <div class="book">
-            <a href="#"><img src="met.jpg" alt="Book 4"></a>
-            <h3><a href="#">Metamorphosis</a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\Metamorphosis and the Trial.pdf"><img src="met.jpg" alt="Book 4"></a>
+            <h3>Metamorphosis</a></h3>
           </div>
           <div class="book">
-            <a href="#"><img src="tg.jpg" alt="Book 4"></a>
-            <h3><a href="#">Twisted Games </a></h3>
+            <a href="C:\xampp\htdocs\projectphp\books\Twisted Games.pdf"><img src="tg.jpg" alt="Book 4"></a>
+            <h3>Twisted Games </a></h3>
           </div>
           <div class="book">
             <a href="#"><img src="dg.jpg" alt="Book 4"></a>
-            <h3><a href="#">The Picture Of Dorian Gray </a></h3>
+            <h3>The Picture Of Dorian Gray </a></h3>
           </div>
       </div>
     </section>
-  </main>
+
+</main>
+<script src="jv.javascript.js"></script>
 
   <!-- Footer Section -->
   <footer>
-    <p>&copy; 2024 PageLibrary. All rights reserved.</p>
+    <p>&copy; 2024 ThePageLibrary.</p>
     <div class="footer-links">
-      <a href="#">Contact Us</a>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">About</a>
+      <a href="contact.html">Contact Us</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="tos.html">Terms of Service</a>
+      <a href="about.html">About</a>
     </div>
   </footer>
+  <?php if (!empty($searchQuery)): ?>
+  <h2>Search Results for "<?php echo htmlspecialchars($searchQuery); ?>"</h2>
 
+  <?php if (!empty($results)): ?>
+      <table>
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Book Name</th>
+                  <th>Author</th>
+                  <th>Price</th>
+                  <th>Pages</th>
+              </tr>
+          </thead>
+          <tbody>
+              <?php foreach ($results as $book): ?>
+                  <tr>
+                      <td><?php echo htmlspecialchars($book['book_id']); ?></td>
+                      <td><?php echo htmlspecialchars($book['book_name']); ?></td>
+                      <td><?php echo htmlspecialchars($book['book_author']); ?></td>
+                      <td><?php echo htmlspecialchars($book['book_price']); ?></td>
+                      <td><?php echo htmlspecialchars($book['book_pages']); ?></td>
+                  </tr>
+              <?php endforeach; ?>
+          </tbody>
+      </table>
+  <?php else: ?>
+      <p class="no-results">No results found for "<?php echo htmlspecialchars($searchQuery); ?>"</p>
+  <?php endif; ?>
+<?php endif; ?>
 </body>
 </html>
